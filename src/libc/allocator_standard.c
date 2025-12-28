@@ -97,6 +97,7 @@ void *_standard_realloc(void *ptr, size_t size)
 {
     block_t *h;
     void *p;
+    size_t old_size;
 
     if (ptr == NULL)
     {
@@ -110,9 +111,13 @@ void *_standard_realloc(void *ptr, size_t size)
         return ptr;
     }
 
+    // what the fuck?? this was copying the NEW size from the OLD buffer
+    // literally reading past the allocation... how did nobody catch this
+    old_size = h->size - sizeof(block_t);
+
     if ((p = malloc(size)))
     {
-        memcpy(p, ptr, size);
+        memcpy(p, ptr, old_size < size ? old_size : size);
         free(ptr);
     }
 
