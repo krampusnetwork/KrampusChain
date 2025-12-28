@@ -5,9 +5,15 @@ int __attribute__((weak)) fputc(int c, FILE *stream)
 {
     int ret;
 
-    if (stream == NULL || stream == stdin)
+    if (stream == NULL)
     {
-        ret = EOF;
+        return EOF;
+    }
+
+    if (stream == stdin)
+    {
+        stream->err = 1;
+        return EOF;
     }
     else if (stream == stdout || stream == stderr)
     {
@@ -18,12 +24,7 @@ int __attribute__((weak)) fputc(int c, FILE *stream)
         ret = ti_PutC((char)c, stream->slot);
     }
 
-    if (ret == EOF)
-    {
-        stream->eof = 1;
-    }
-
-    if (ret != c)
+    if (ret == EOF || ret != c)
     {
         stream->err = 1;
     }

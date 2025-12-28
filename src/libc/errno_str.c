@@ -2,7 +2,6 @@
 #include <errno.h>
 #include <stdio.h>
 #include <string.h>
-#include <ti/sprintf.h>
 
 static char const * const errno_strings[] = {
     "no error",
@@ -87,24 +86,14 @@ static char const * const errno_strings[] = {
     "EXDEV",
 };
 
-static char * const unknown_errno_string = "unknown error -8388608";
-
-#define unknown_errno_number_offset 14
-#if 0
-/* static_assert on a string is a Clang 16.0.0 extension */
-static_assert(
-    unknown_errno_string[unknown_errno_number_offset + 0] == '-' &&
-    unknown_errno_string[unknown_errno_number_offset + 8] == '\0',
-    "the string for unknown errno numbers has been changed"
-);
-#endif
+static char unknown_errno_string[32];
 
 #define errno_strings_count (sizeof(errno_strings) / sizeof(errno_strings[0]))
 
 char* strerror(int errnum) {
     if ((unsigned int)errnum >= errno_strings_count) {
-        boot_sprintf(&(unknown_errno_string[unknown_errno_number_offset]), "%d", errnum);
-        return (char*)unknown_errno_string;
+        snprintf(unknown_errno_string, sizeof(unknown_errno_string), "unknown error %d", errnum);
+        return unknown_errno_string;
     }
     return (char*)errno_strings[errnum];
 }
