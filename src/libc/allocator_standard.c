@@ -111,8 +111,6 @@ void *_standard_realloc(void *ptr, size_t size)
         return ptr;
     }
 
-    // what the fuck?? this was copying the NEW size from the OLD buffer
-    // literally reading past the allocation... how did nobody catch this
     old_size = h->size - sizeof(block_t);
 
     if ((p = malloc(size)))

@@ -79,6 +79,13 @@ size_t strftime(char *s, size_t n, const char *f, const struct tm *tm)
     const char *beg = s;
     const char *e = s + n;
 
+    if (!tm || tm->tm_wday < 0 || tm->tm_wday > 6 ||
+        tm->tm_mon < 0 || tm->tm_mon > 11)
+    {
+        *s = '\0';
+        return 0;
+    }
+
     while (s + 1 < e && *f)
     {
         int c = *f++;
