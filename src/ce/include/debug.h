@@ -20,6 +20,11 @@ extern "C" {
 /** Standard error debug output */
 #define dbgerr ((char*)0xFC0000)
 
+/** Max chars written to debug console (including NUL). Override via -DDBG_CONSOLE_MAX=... */
+#ifndef DBG_CONSOLE_MAX
+#define DBG_CONSOLE_MAX 1024
+#endif
+
 /** Break on read. */
 #define DBG_WATCHPOINT_READ (1 << 0) 
 /** Break on write. */
@@ -38,8 +43,9 @@ extern "C" {
  * @param[in] ... Uses printf-formated specifier string.
  * @note Does not support floats unless `HAS_PRINTF = YES`.
  */
+// use snprintf to cap debug output
 #define dbg_printf(...) \
-sprintf(dbgout, ##__VA_ARGS__)
+snprintf(dbgout, DBG_CONSOLE_MAX, ##__VA_ARGS__)
 
 /**
  * Used to print to the emulator console.
@@ -49,8 +55,9 @@ sprintf(dbgout, ##__VA_ARGS__)
  * @param[in] ... Uses printf-formated specifier string.
  * @note Does not support floats unless `HAS_PRINTF = YES`.
  */
+// use snprintf to cap debug output
 #define dbg_sprintf(out, ...) \
-sprintf(out, ##__VA_ARGS__)
+snprintf(out, DBG_CONSOLE_MAX, ##__VA_ARGS__)
 
 /**
  * Clears the emulation console.
