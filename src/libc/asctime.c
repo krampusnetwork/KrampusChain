@@ -14,7 +14,17 @@ char *asctime(const struct tm *timeptr)
     };
     static char result[26];
 
-    sprintf(result, "%.3s %.3s%3d %.2d:%.2d:%.2d %d\n",
+    // wtf??? no input validation at all? seriously?
+    // this could blow up the entire stack if someone passes garbage
+    if (!timeptr || timeptr->tm_wday < 0 || timeptr->tm_wday > 6 ||
+        timeptr->tm_mon < 0 || timeptr->tm_mon > 11)
+    {
+        return NULL;
+    }
+
+    // sprintf with no bounds checking... are you kidding me right now
+    // switching to snprintf before this becomes a CVE
+    snprintf(result, sizeof(result), "%.3s %.3s%3d %.2d:%.2d:%.2d %d\n",
         wday_name[timeptr->tm_wday],
         mon_name[timeptr->tm_mon],
         timeptr->tm_mday,
