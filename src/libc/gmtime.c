@@ -27,6 +27,11 @@ struct tm *gmtime(const time_t *tp)
     {
         31,28,31,30,31,30,31,31,30,31,30,31
     };
+    if (tp == NULL)
+    {
+        return NULL;
+    }
+
     static struct tm tm2;
     time_t secs_this_year;
     time_t t = *tp;

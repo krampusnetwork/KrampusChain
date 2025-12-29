@@ -7,6 +7,11 @@
 
 struct tm *localtime(const time_t *timer)
 {
+    if (timer == NULL)
+    {
+        return NULL;
+    }
+
     time_t timer2 = *timer;
     timer2 -= LOCALTIME_GMT_OFFSET * SECS_PER_MIN;
 
